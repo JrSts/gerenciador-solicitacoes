@@ -1,7 +1,7 @@
 package com.jrsts.sgs.model;
 
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,6 +60,9 @@ public class Solicitante {
     this.id = id;
     this.nome = nome;
     this.cpfCnpj = cpfCnpj;
+  }
+
+  public Solicitante() {
   }
 
 }
