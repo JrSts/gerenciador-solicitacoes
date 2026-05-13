@@ -1,7 +1,9 @@
 package com.jrsts.sgs.service;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.UUID;
+
+import org.springframework.stereotype.Service;
 
 import com.jrsts.sgs.dtos.SolicitanteDTO;
 import com.jrsts.sgs.model.Solicitante;
@@ -21,5 +23,9 @@ public class SolicitanteService {
     Solicitante solicitante = new Solicitante(id, solicitanteDTO.nome(), solicitanteDTO.cpfCnpj());
     solicitanteRepository.salvarSolicitante(solicitante);
     return solicitante;
+  }
+
+  public List<Solicitante> buscarSolicitantes() {
+    return solicitanteRepository.buscarSolicitantes();
   }
 }

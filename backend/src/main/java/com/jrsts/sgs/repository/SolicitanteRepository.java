@@ -1,5 +1,6 @@
 package com.jrsts.sgs.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,5 +31,15 @@ public class SolicitanteRepository {
             rs.getString("nome"),
             rs.getString("cpf_cnpj")),
         id);
+  }
+
+  public List<Solicitante> buscarSolicitantes() {
+    String sql = "SELECT id, nome, cpf_cnpj FROM solicitante";
+
+    return jdbcTemplate.query(
+        sql, (rs, rowNum) -> new Solicitante(
+            UUID.fromString(rs.getString("id")),
+            rs.getString("nome"),
+            rs.getString("cpf_cnpj")));
   }
 }
