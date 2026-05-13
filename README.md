@@ -51,7 +51,6 @@ O script de criação das tabelas e inserts está localizado em:
 
 ```
 	backend/src/main/java/com/jrsts/sgs/scripts/initdb.sql
-
 ```
 
 ### O script contém:
@@ -106,6 +105,8 @@ Na raiz do projeto execute:
 
 ### Backend
 
+application.properties
+
 ```
 	SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sgs
 	SPRING_DATASOURCE_USERNAME=postgres
@@ -114,9 +115,10 @@ Na raiz do projeto execute:
 
 ### Frontend
 
+.env
+
 ```
 	NEXT_PUBLIC_API_URL=http://localhost:8080
-
 ```
 
 ## Endpoints Principais
@@ -125,14 +127,12 @@ Na raiz do projeto execute:
 
 ```
 	GET /solicitacoes
-
 ```
 
 ### Buscar solicitações com filtros
 
 ```
 	GET /solicitacoes/filter
-
 ```
 
 #### Query params:
