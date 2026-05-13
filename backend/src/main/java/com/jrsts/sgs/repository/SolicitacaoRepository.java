@@ -6,242 +6,173 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.jrsts.sgs.dtos.FiltroSolicitacaoDTO;
-import com.jrsts.sgs.enuns.StatusSolicitacao;
 import com.jrsts.sgs.mapper.SolicitacaoRowMapper;
-import com.jrsts.sgs.model.Categoria;
 import com.jrsts.sgs.model.Solicitacao;
-import com.jrsts.sgs.model.Solicitante;
 
 @Repository
 public class SolicitacaoRepository {
 
-  private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-  public SolicitacaoRepository(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-  }
+    public SolicitacaoRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-  public List<Solicitacao> buscarSolicitacoesPorCategoria(String nomeCategoria) {
+    public void salvar(Solicitacao solicitacao) {
+        UUID id = UUID.randomUUID();
+        String sql = """
+                    INSERT INTO solicitacao
+                    (
+                        id,
+                        solicitante_id,
+                        categoria_id,
+                        descricao,
+                        valor,
+                        data_solicitacao,
+                        status
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
 
-    String sql = """
-            SELECT s.id, s.descricao, s.valor, s.data_solicitacao, s.status,
-                   s.solicitante_id, s.categoria_id
-            FROM solicitacao s
-            JOIN categoria c ON s.categoria_id = c.id
-            WHERE c.nome = ?
-        """;
-
-    return jdbcTemplate.query(sql, (rs, rowNum) -> {
-      Solicitacao s = new Solicitacao();
-      s.setId(rs.getObject("id", UUID.class));
-      s.setDescricao(rs.getString("descricao"));
-      s.setValor(rs.getDouble("valor"));
-      s.setDataSolicitacao(rs.getDate("data_solicitacao").toLocalDate());
-      s.setStatus(StatusSolicitacao.valueOf(rs.getString("status")));
-
-      return s;
-    }, nomeCategoria);
-  }
-
-  public void salvarSolicitacao(Solicitacao solicitacao) {
-    UUID id = UUID.randomUUID();
-    String sql = """
-            INSERT INTO solicitacao
-            (
+        jdbcTemplate.update(
+                sql,
                 id,
-                solicitante_id,
-                categoria_id,
-                descricao,
-                valor,
-                data_solicitacao,
-                status
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """;
-
-    jdbcTemplate.update(
-        sql,
-        id,
-        solicitacao.getSolicitante().getId(),
-        solicitacao.getCategoria().getId(),
-        solicitacao.getDescricao(),
-        solicitacao.getValor(),
-        solicitacao.getDataSolicitacao(),
-        solicitacao.getStatus().name());
-  }
-
-  public void atualizarStatusSolicitacao(Solicitacao solicitacao) {
-    String sql = "UPDATE solicitacao SET status = ? WHERE id = ?";
-    jdbcTemplate.update(sql, solicitacao.getStatus().name(), solicitacao.getId());
-  }
-
-  public Optional<Solicitacao> buscarSolicitacaoPorId(UUID id) {
-
-    String sql = """
-            SELECT
-                s.id as solicitacao_id,
-                s.descricao,
-                s.valor,
-                s.data_solicitacao,
-                s.status,
-
-                so.id as solicitante_id,
-                so.nome as solicitante_nome,
-                so.cpf_cnpj,
-
-                c.id as categoria_id,
-                c.nome as categoria_nome
-
-            FROM solicitacao s
-
-            INNER JOIN solicitante so
-                ON so.id = s.solicitante_id
-
-            INNER JOIN categoria c
-                ON c.id = s.categoria_id
-
-            WHERE s.id = ?
-        """;
-
-    List<Solicitacao> solicitacoes = jdbcTemplate.query(sql, new SolicitacaoRowMapper(), id);
-    return solicitacoes.stream().findFirst();
-  }
-
-  public List<Solicitacao> buscarSolicitacoesComFiltro(FiltroSolicitacaoDTO filtro) {
-
-    StringBuilder sql = new StringBuilder("""
-            SELECT
-                s.id as solicitacao_id,
-                s.descricao,
-                s.valor,
-                s.data_solicitacao,
-                s.status,
-
-                so.id as solicitante_id,
-                so.nome as solicitante_nome,
-                so.cpf_cnpj,
-
-                c.id as categoria_id,
-                c.nome as categoria_nome
-
-            FROM solicitacao s
-
-            INNER JOIN solicitante so
-                ON so.id = s.solicitante_id
-
-            INNER JOIN categoria c
-                ON c.id = s.categoria_id
-
-            WHERE 1 = 1
-        """);
-
-    List<Object> params = new ArrayList<>();
-
-    if (filtro.status() != null) {
-      sql.append(" AND s.status = ?");
-      params.add(filtro.status().name());
+                solicitacao.getSolicitante().getId(),
+                solicitacao.getCategoria().getId(),
+                solicitacao.getDescricao(),
+                solicitacao.getValor(),
+                solicitacao.getDataSolicitacao(),
+                solicitacao.getStatus().name());
     }
 
-    if (filtro.categoriaId() != null) {
-      sql.append(" AND s.categoria_id = ?");
-      params.add(filtro.categoriaId());
+    public void atualizarStatus(Solicitacao solicitacao) {
+        String sql = "UPDATE solicitacao SET status = ? WHERE id = ?";
+        jdbcTemplate.update(sql, solicitacao.getStatus().name(), solicitacao.getId());
     }
 
-    if (filtro.dataInicio() != null && filtro.dataFim() != null) {
-      sql.append(" AND s.data_solicitacao BETWEEN ? AND ?");
-      params.add(Date.valueOf(filtro.dataInicio()));
-      params.add(Date.valueOf(filtro.dataFim()));
+    public Optional<Solicitacao> buscarPorId(UUID id) {
+
+        String sql = """
+                    SELECT
+                        s.id as solicitacao_id,
+                        s.descricao,
+                        s.valor,
+                        s.data_solicitacao,
+                        s.status,
+
+                        so.id as solicitante_id,
+                        so.nome as solicitante_nome,
+                        so.cpf_cnpj,
+
+                        c.id as categoria_id,
+                        c.nome as categoria_nome
+
+                    FROM solicitacao s
+
+                    INNER JOIN solicitante so
+                        ON so.id = s.solicitante_id
+
+                    INNER JOIN categoria c
+                        ON c.id = s.categoria_id
+
+                    WHERE s.id = ?
+                """;
+
+        try {
+            Solicitacao solicitacao = jdbcTemplate.queryForObject(
+                    sql,
+                    new SolicitacaoRowMapper(),
+                    id);
+            return Optional.ofNullable(solicitacao);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    return jdbcTemplate.query(
-        sql.toString(),
-        (rs, rowNum) -> {
+    public List<Solicitacao> buscarComFiltro(FiltroSolicitacaoDTO filtro) {
 
-          Solicitacao s = new Solicitacao();
+        StringBuilder sql = new StringBuilder("""
+                    SELECT
+                        s.id as solicitacao_id,
+                        s.descricao,
+                        s.valor,
+                        s.data_solicitacao,
+                        s.status,
 
-          s.setId(rs.getObject("solicitacao_id", UUID.class));
-          s.setDescricao(rs.getString("descricao"));
-          s.setValor(rs.getDouble("valor"));
-          s.setDataSolicitacao(
-              rs.getDate("data_solicitacao").toLocalDate());
+                        so.id as solicitante_id,
+                        so.nome as solicitante_nome,
+                        so.cpf_cnpj,
 
-          s.setStatus(
-              StatusSolicitacao.valueOf(rs.getString("status")));
+                        c.id as categoria_id,
+                        c.nome as categoria_nome
 
-          Solicitante so = new Solicitante();
-          so.setId(rs.getObject("solicitante_id", UUID.class));
-          so.setNome(rs.getString("solicitante_nome"));
-          so.setCpfCnpj(rs.getString("cpf_cnpj"));
+                    FROM solicitacao s
 
-          Categoria c = new Categoria();
-          c.setId(rs.getObject("categoria_id", UUID.class));
-          c.setNome(rs.getString("categoria_nome"));
+                    INNER JOIN solicitante so
+                        ON so.id = s.solicitante_id
 
-          s.setSolicitante(so);
-          s.setCategoria(c);
+                    INNER JOIN categoria c
+                        ON c.id = s.categoria_id
 
-          return s;
-        },
-        params.toArray());
-  }
+                    WHERE 1 = 1
+                """);
 
-  public List<Solicitacao> buscarSolicitacoes() {
+        List<Object> params = new ArrayList<>();
 
-    String sql = """
-            SELECT
-                s.id as solicitacao_id,
-                s.descricao,
-                s.valor,
-                s.data_solicitacao,
-                s.status,
+        if (filtro.status() != null) {
+            sql.append(" AND s.status = ?");
+            params.add(filtro.status().name());
+        }
 
-                so.id as solicitante_id,
-                so.nome as solicitante_nome,
-                so.cpf_cnpj,
+        if (filtro.categoriaId() != null) {
+            sql.append(" AND s.categoria_id = ?");
+            params.add(filtro.categoriaId());
+        }
 
-                c.id as categoria_id,
-                c.nome as categoria_nome
+        if (filtro.dataInicio() != null && filtro.dataFim() != null) {
+            sql.append(" AND s.data_solicitacao BETWEEN ? AND ?");
+            params.add(Date.valueOf(filtro.dataInicio()));
+            params.add(Date.valueOf(filtro.dataFim()));
+        }
 
-            FROM solicitacao s
+        return jdbcTemplate.query(
+                sql.toString(),
+                new SolicitacaoRowMapper(),
+                params.toArray());
+    }
 
-            INNER JOIN solicitante so
-                ON so.id = s.solicitante_id
+    public List<Solicitacao> listar() {
 
-            INNER JOIN categoria c
-                ON c.id = s.categoria_id
-        """;
+        String sql = """
+                    SELECT
+                        s.id as solicitacao_id,
+                        s.descricao,
+                        s.valor,
+                        s.data_solicitacao,
+                        s.status,
 
-    return jdbcTemplate.query(sql,
-        (rs, rowNum) -> {
+                        so.id as solicitante_id,
+                        so.nome as solicitante_nome,
+                        so.cpf_cnpj,
 
-          Solicitacao s = new Solicitacao();
+                        c.id as categoria_id,
+                        c.nome as categoria_nome
 
-          s.setId(rs.getObject("solicitacao_id", UUID.class));
-          s.setDescricao(rs.getString("descricao"));
-          s.setValor(rs.getDouble("valor"));
-          s.setDataSolicitacao(
-              rs.getDate("data_solicitacao").toLocalDate());
+                    FROM solicitacao s
 
-          s.setStatus(
-              StatusSolicitacao.valueOf(rs.getString("status")));
+                    INNER JOIN solicitante so
+                        ON so.id = s.solicitante_id
 
-          Solicitante so = new Solicitante();
-          so.setId(rs.getObject("solicitante_id", UUID.class));
-          so.setNome(rs.getString("solicitante_nome"));
-          so.setCpfCnpj(rs.getString("cpf_cnpj"));
+                    INNER JOIN categoria c
+                        ON c.id = s.categoria_id
+                """;
 
-          Categoria c = new Categoria();
-          c.setId(rs.getObject("categoria_id", UUID.class));
-          c.setNome(rs.getString("categoria_nome"));
-
-          s.setSolicitante(so);
-          s.setCategoria(c);
-
-          return s;
-        });
-  }
+        return jdbcTemplate.query(sql,
+                new SolicitacaoRowMapper());
+    }
 }

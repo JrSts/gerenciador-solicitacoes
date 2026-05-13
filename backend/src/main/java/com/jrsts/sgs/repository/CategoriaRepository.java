@@ -1,11 +1,14 @@
 package com.jrsts.sgs.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.jrsts.sgs.mapper.CategoriaRowMapper;
 import com.jrsts.sgs.model.Categoria;
 
 @Repository
@@ -17,31 +20,29 @@ public class CategoriaRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  public void salvarCategoria(Categoria categoria) {
+  public void salvar(Categoria categoria) {
     String sql = "INSERT INTO categoria (id, nome) VALUES (?, ?)";
     jdbcTemplate.update(sql, categoria.getId(), categoria.getNome());
   }
 
-  public Categoria buscarCategoriaPorId(UUID id) {
+  public Optional<Categoria> buscarPorId(UUID id) {
 
     String sql = "SELECT id, nome FROM categoria WHERE id = ?";
 
-    return jdbcTemplate.queryForObject(
-        sql,
-        (rs, rowNum) -> new Categoria(
-            UUID.fromString(rs.getString("id")),
-            rs.getString("nome")),
-        id);
+    try {
+      Categoria categoria = jdbcTemplate.queryForObject(sql, new CategoriaRowMapper(), id);
+      return Optional.ofNullable(categoria);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
-  public List<Categoria> buscarCategorias() {
+  public List<Categoria> listar() {
 
     String sql = "SELECT id, nome FROM categoria";
 
     return jdbcTemplate.query(
         sql,
-        (rs, rowNum) -> new Categoria(
-            UUID.fromString(rs.getString("id")),
-            rs.getString("nome")));
+        new CategoriaRowMapper());
   }
 }

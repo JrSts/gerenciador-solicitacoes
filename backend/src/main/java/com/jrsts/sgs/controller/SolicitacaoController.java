@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jrsts.sgs.dtos.AtualizarStatusDTO;
 import com.jrsts.sgs.dtos.FiltroSolicitacaoDTO;
 import com.jrsts.sgs.dtos.SolicitacaoDTO;
-import com.jrsts.sgs.exception.ResourceNotFoundException;
 import com.jrsts.sgs.model.Solicitacao;
 import com.jrsts.sgs.service.SolicitacaoService;
 
@@ -32,43 +31,32 @@ public class SolicitacaoController {
   }
 
   @GetMapping("/filter")
-  public ResponseEntity<List<Solicitacao>> buscarSolicitacoesComFiltro(
+  public ResponseEntity<List<Solicitacao>> buscarComFiltro(
       @ModelAttribute FiltroSolicitacaoDTO filtrosDTO) {
-    return ResponseEntity.ok().body(solicitacaoService.buscarSolicitacoesComFiltro(filtrosDTO));
+    return ResponseEntity.ok(solicitacaoService.buscarComFiltro(filtrosDTO));
   }
 
   @PostMapping
-  public ResponseEntity<Solicitacao> salvarSolicitacao(@RequestBody SolicitacaoDTO solicitacaoDTO) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(solicitacaoService.salvarSolicitacao(solicitacaoDTO));
+  public ResponseEntity<Solicitacao> salvar(@RequestBody SolicitacaoDTO solicitacaoDTO) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(solicitacaoService.salvar(solicitacaoDTO));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Solicitacao> atualizarStatusSolicitacao(@PathVariable UUID id,
+  public ResponseEntity<Solicitacao> atualizarStatus(@PathVariable UUID id,
       @RequestBody AtualizarStatusDTO atualizarStatusDTO) {
-    Solicitacao solicitacao = solicitacaoService.buscarSolicitacaoPorId(id);
-
-    if (solicitacao == null) {
-      throw new ResourceNotFoundException("Solicitação não encontrada");
-    }
-
     return ResponseEntity.ok(solicitacaoService.atualizarStatusSolicitacao(
         id,
         atualizarStatusDTO.getStatus()));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Solicitacao> buscarSolicitacaoPorId(@PathVariable UUID id) {
-    Solicitacao solicitacao = solicitacaoService.buscarSolicitacaoPorId(id);
-
-    if (solicitacao == null) {
-      throw new ResourceNotFoundException("Solicitação não encontrada");
-    }
-    return ResponseEntity.ok().body(solicitacao);
+  public ResponseEntity<Solicitacao> buscarPorId(@PathVariable UUID id) {
+    return ResponseEntity.ok(solicitacaoService.buscarPorId(id));
   }
 
   @GetMapping
-  public ResponseEntity<List<Solicitacao>> buscarSolicitacoes() {
-    return ResponseEntity.ok().body(solicitacaoService.buscarSolicitacoes());
+  public ResponseEntity<List<Solicitacao>> listar() {
+    return ResponseEntity.ok(solicitacaoService.listar());
   }
 
 }

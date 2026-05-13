@@ -18,14 +18,14 @@ public class SolicitanteService {
     this.solicitanteRepository = solicitanteRepository;
   }
 
-  public Solicitante salvarSolicitante(SolicitanteDTO solicitanteDTO) {
+  public Solicitante salvar(SolicitanteDTO solicitanteDTO) {
     UUID id = UUID.randomUUID();
     Solicitante solicitante = new Solicitante(id, solicitanteDTO.nome(), solicitanteDTO.cpfCnpj());
-    solicitanteRepository.salvarSolicitante(solicitante);
+    solicitanteRepository.salvar(solicitante);
     return solicitante;
   }
 
-  public List<Solicitante> buscarSolicitantes() {
-    return solicitanteRepository.buscarSolicitantes();
+  public List<Solicitante> listar() {
+    return solicitanteRepository.listar();
   }
 }

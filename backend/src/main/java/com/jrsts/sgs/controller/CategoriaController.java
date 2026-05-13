@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jrsts.sgs.dtos.CategoriaDTO;
-import com.jrsts.sgs.exception.ResourceNotFoundException;
 import com.jrsts.sgs.model.Categoria;
 import com.jrsts.sgs.service.CategoriaService;
 
@@ -28,23 +27,20 @@ public class CategoriaController {
   }
 
   @PostMapping
-  public ResponseEntity<Categoria> criarCategoria(@RequestBody CategoriaDTO categoria) {
-    Categoria novaCategoria = categoriaService.criarCategoria(categoria);
+  public ResponseEntity<Categoria> salvar(@RequestBody CategoriaDTO categoriaDTO) {
+    Categoria novaCategoria = categoriaService.salvar(categoriaDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(novaCategoria);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Categoria> buscarCategoriaPorId(@PathVariable UUID id) {
-    Categoria categoria = categoriaService.buscarCategoriaPorId(id);
-    if (categoria == null) {
-      throw new ResourceNotFoundException("Categoria não encontrada");
-    }
-    return ResponseEntity.ok().body(categoria);
+  public ResponseEntity<Categoria> buscarPorId(@PathVariable UUID id) {
+    Categoria categoria = categoriaService.buscarPorId(id);
+    return ResponseEntity.ok(categoria);
   }
 
   @GetMapping
-  public ResponseEntity<List<Categoria>> buscarCategorias() {
-    return ResponseEntity.ok().body(categoriaService.buscarCategorias());
+  public ResponseEntity<List<Categoria>> listar() {
+    return ResponseEntity.ok(categoriaService.listar());
   }
 
 }

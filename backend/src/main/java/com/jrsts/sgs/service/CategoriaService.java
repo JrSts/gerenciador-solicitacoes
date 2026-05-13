@@ -5,9 +5,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.jrsts.sgs.dtos.CategoriaDTO;
+import com.jrsts.sgs.exception.ResourceNotFoundException;
 import com.jrsts.sgs.model.Categoria;
 import com.jrsts.sgs.repository.CategoriaRepository;
-import com.jrsts.sgs.dtos.CategoriaDTO;
 
 @Service
 public class CategoriaService {
@@ -18,18 +19,19 @@ public class CategoriaService {
     this.categoriaRepository = categoriaRepository;
   }
 
-  public Categoria criarCategoria(CategoriaDTO categoriaDTO) {
+  public Categoria salvar(CategoriaDTO categoriaDTO) {
     UUID id = UUID.randomUUID();
     Categoria categoria = new Categoria(id, categoriaDTO.nome());
-    categoriaRepository.salvarCategoria(categoria);
+    categoriaRepository.salvar(categoria);
     return categoria;
   }
 
-  public Categoria buscarCategoriaPorId(UUID id) {
-    return categoriaRepository.buscarCategoriaPorId(id);
+  public Categoria buscarPorId(UUID id) {
+    return categoriaRepository.buscarPorId(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
   }
 
-  public List<Categoria> buscarCategorias() {
-    return categoriaRepository.buscarCategorias();
+  public List<Categoria> listar() {
+    return categoriaRepository.listar();
   }
 }

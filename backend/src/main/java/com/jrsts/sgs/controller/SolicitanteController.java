@@ -26,14 +26,13 @@ public class SolicitanteController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Solicitante>> buscarSolicitantes() {
-    List<Solicitante> solicitantes = solicitanteService.buscarSolicitantes();
-    return ResponseEntity.ok().body(solicitantes);
+  public ResponseEntity<List<Solicitante>> listar() {
+    List<Solicitante> solicitantes = solicitanteService.listar();
+    return ResponseEntity.ok(solicitantes);
   }
 
   @PostMapping
-  public ResponseEntity<Solicitante> criarSolicitante(@RequestBody SolicitanteDTO solicitanteDTO) {
-    System.out.println(solicitanteDTO.nome() + " | " + solicitanteDTO.cpfCnpj());
-    return ResponseEntity.status(HttpStatus.CREATED).body(solicitanteService.salvarSolicitante(solicitanteDTO));
+  public ResponseEntity<Solicitante> salvar(@RequestBody SolicitanteDTO solicitanteDTO) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(solicitanteService.salvar(solicitanteDTO));
   }
 }
