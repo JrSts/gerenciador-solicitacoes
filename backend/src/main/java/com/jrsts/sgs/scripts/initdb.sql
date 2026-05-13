@@ -1,7 +1,3 @@
-CREATE DATABASE sgs;
-
-\c sgs;
-
 CREATE TABLE solicitante (
     id UUID PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
