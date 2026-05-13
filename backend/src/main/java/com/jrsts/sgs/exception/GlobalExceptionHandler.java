@@ -43,6 +43,21 @@ public class GlobalExceptionHandler {
         .body(error);
   }
 
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<ErrorResponse> handleForbidden(
+      ForbiddenException ex,
+      HttpServletRequest request) {
+
+    ErrorResponse error = new ErrorResponse(
+        LocalDateTime.now(),
+        HttpStatus.FORBIDDEN.value(),
+        "Forbidden Operation",
+        ex.getMessage(),
+        request.getRequestURI());
+
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGeneric(
       Exception ex,

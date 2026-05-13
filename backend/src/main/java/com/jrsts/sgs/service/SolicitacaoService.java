@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.jrsts.sgs.dtos.FiltroSolicitacaoDTO;
 import com.jrsts.sgs.dtos.SolicitacaoDTO;
 import com.jrsts.sgs.enuns.StatusSolicitacao;
+import com.jrsts.sgs.exception.ForbiddenException;
+import com.jrsts.sgs.exception.ResourceNotFoundException;
 import com.jrsts.sgs.model.Categoria;
 import com.jrsts.sgs.model.Solicitacao;
 import com.jrsts.sgs.model.Solicitante;
@@ -31,45 +33,45 @@ public class SolicitacaoService {
     this.categoriaRepository = categoriaRepository;
   }
 
-  public Solicitacao salvarSolicitacao(SolicitacaoDTO solicitacaoDTO) {
+  public Solicitacao salvar(SolicitacaoDTO solicitacaoDTO) {
     UUID id = UUID.randomUUID();
-    Solicitante solicitante = solicitanteRepository.buscarSolicitantePorId(solicitacaoDTO.solicitanteId());
-    Categoria categoria = categoriaRepository.buscarCategoriaPorId(solicitacaoDTO.categoriaId());
+    Solicitante solicitante = solicitanteRepository.buscarPorId(solicitacaoDTO.solicitanteId())
+        .orElseThrow(() -> new ResourceNotFoundException("Solicitante não encontrado!"));
+    Categoria categoria = categoriaRepository.buscarPorId(solicitacaoDTO.categoriaId())
+        .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada!"));
     Solicitacao solicitacao = new Solicitacao(
         id,
         solicitante,
         categoria,
         solicitacaoDTO.descricao(),
         solicitacaoDTO.valor());
-    solicitacaoRepository.salvarSolicitacao(solicitacao);
+    solicitacaoRepository.salvar(solicitacao);
     return solicitacao;
   }
 
   public Solicitacao atualizarStatusSolicitacao(UUID id, StatusSolicitacao novoStatus) {
-    Solicitacao solicitacao = solicitacaoRepository.buscarSolicitacaoPorId(id).orElse(null);
-    if (solicitacao == null)
-      throw new RuntimeException("Solicitação nao encontrada!");
+    Solicitacao solicitacao = solicitacaoRepository.buscarPorId(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Solicitação não encontrada!"));
     if (!solicitacao.getStatus().podeAlterarPara(novoStatus)) {
-      throw new RuntimeException(
+      throw new ForbiddenException(
           "Não é permitido alterar o status da solicitação de " + solicitacao.getStatus() + " para " + novoStatus);
     }
     solicitacao.setStatus(novoStatus);
-    solicitacaoRepository.atualizarStatusSolicitacao(solicitacao);
+    solicitacaoRepository.atualizarStatus(solicitacao);
     return solicitacao;
   }
 
-  public Solicitacao buscarSolicitacaoPorId(UUID id) {
-    Solicitacao solicitacao = solicitacaoRepository.buscarSolicitacaoPorId(id).orElse(null);
-    if (solicitacao == null)
-      throw new RuntimeException("Solicitação não encontrada!");
+  public Solicitacao buscarPorId(UUID id) {
+    Solicitacao solicitacao = solicitacaoRepository.buscarPorId(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Solicitação não encontrada!"));
     return solicitacao;
   }
 
-  public List<Solicitacao> buscarSolicitacoesComFiltro(FiltroSolicitacaoDTO filtrosDTO) {
-    return solicitacaoRepository.buscarSolicitacoesComFiltro(filtrosDTO);
+  public List<Solicitacao> buscarComFiltro(FiltroSolicitacaoDTO filtrosDTO) {
+    return solicitacaoRepository.buscarComFiltro(filtrosDTO);
   }
 
-  public List<Solicitacao> buscarSolicitacoes() {
-    return solicitacaoRepository.buscarSolicitacoes();
+  public List<Solicitacao> listar() {
+    return solicitacaoRepository.listar();
   }
 }
