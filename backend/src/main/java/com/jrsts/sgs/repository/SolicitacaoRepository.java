@@ -157,8 +157,6 @@ public class SolicitacaoRepository {
       params.add(Date.valueOf(filtro.dataFim()));
     }
 
-    sql.append(" ORDER BY s.data_solicitacao DESC");
-
     return jdbcTemplate.query(
         sql.toString(),
         (rs, rowNum) -> {
