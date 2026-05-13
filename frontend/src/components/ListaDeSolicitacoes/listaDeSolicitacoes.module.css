@@ -1,0 +1,19 @@
+#tabela {
+  width: 100%;
+  border-collapse: collapse;
+  border-color: #ddd;
+}
+
+#cellHead {
+  padding: 10px 15px;
+  text-align: start;
+  min-width: 100px;
+  max-width: 100px;
+}
+
+#cellHeadId {
+  min-width: 420px;
+  max-width: 420px;
+  padding: 10px 15px;
+  text-align: start;
+}

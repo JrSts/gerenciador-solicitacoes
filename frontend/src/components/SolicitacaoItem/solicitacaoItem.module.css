@@ -1,0 +1,34 @@
+#tableData {
+  padding: 10px 15px;
+}
+
+#cellAcoes {
+  background-color: blue;
+}
+
+#icon {
+  border: 1px solid #ddd;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: ease-in-out;
+}
+
+#icon:hover {
+  transform: scale(1.1);
+}
+
+#select {
+  padding: 8px;
+  border-radius: 10px;
+  background-color: #fff;
+  color: black;
+  font-weight: 700;
+  cursor: pointer;
+  width: 150px;
+  text-align: center;
+}
+
+#select:hover {
+  background-color: #eee;
+}
