@@ -5,9 +5,11 @@ import java.util.UUID;
 
 import com.jrsts.sgs.enuns.StatusSolicitacao;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,19 +26,24 @@ public class Solicitacao {
   private UUID id;
 
   @ManyToOne
-  @JoinColumn(name = "solicitante_id", nullable = false)
+  @JoinColumn(name = "solicitante_id", nullable = false, foreignKey = @ForeignKey(name = "fk_solicitacao_solicitante"))
   private Solicitante solicitante;
 
   @ManyToOne
-  @JoinColumn(name = "categoria_id", nullable = false)
+  @JoinColumn(name = "categoria_id", nullable = false, foreignKey = @ForeignKey(name = "fk_solicitacao_categoria"))
   private Categoria categoria;
 
+  @Column(nullable = false)
   private String descricao;
+
+  @Column(nullable = false)
   private double valor;
 
+  @Column(name = "data_solicitacao", nullable = false)
   private LocalDate dataSolicitacao;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "status", columnDefinition = "status_solicitacao", nullable = false)
   private StatusSolicitacao status;
 
   public UUID getId() {
@@ -88,9 +95,6 @@ public class Solicitacao {
   }
 
   public LocalDate getDataSolicitacao() {
-    if (dataSolicitacao == null) {
-      dataSolicitacao = LocalDate.now();
-    }
     return dataSolicitacao;
   }
 
