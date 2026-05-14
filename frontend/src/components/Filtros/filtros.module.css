@@ -1,0 +1,35 @@
+#select {
+  padding: 8px;
+  border-radius: 10px;
+  background-color: #fff;
+  color: black;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid;
+}
+
+#select:hover {
+  background-color: #eee;
+}
+
+#input {
+  padding: 8px;
+  border-radius: 10px;
+  background-color: #fff;
+  color: black;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#input:hover {
+  background-color: #eee;
+}
+#dateInputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#label {
+  font-size: 13px;
+}
