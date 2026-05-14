@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./modal.module.css";
 import { Categoria } from "@/types/Categoria";
-import { Solicitacao } from "@/types/Solicitacao";
 import { Solicitante } from "@/types/Solicitante";
-import { formatarData, formatarMoeda } from "@/lib/util";
 import { salvarSolicitacao } from "@/services/salvarSolicitacao";
 
 type Props = {

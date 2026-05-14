@@ -3,7 +3,6 @@
 import styles from "./page.module.css";
 import ListaDeSolicitacoes from "../components/ListaDeSolicitacoes/page";
 import { useState } from "react";
-import { statusList } from "@/types/StatusList";
 import { FiltroSolicitacaoDTO } from "@/dtos/FiltroSolicitacoesDTO";
 import Modal from "@/components/Modal/page";
 import { useCategorias } from "@/hooks/useCategorias";
