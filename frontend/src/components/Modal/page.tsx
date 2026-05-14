@@ -13,7 +13,6 @@ type Props = {
   fecharModal: () => void;
   salvar: (dados: any) => void;
   categorias: Categoria[];
-  solicitacao?: Solicitacao;
   solicitantes: Solicitante[];
 };
 
@@ -22,22 +21,12 @@ export default function Modal({
   fecharModal,
   salvar,
   categorias,
-  solicitacao,
   solicitantes,
 }: Props) {
   const [descricao, setDescricao] = useState("");
-  const [valor, setValor] = useState(0);
+  const [valor, setValor] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
   const [solicitanteId, setSolicitanteId] = useState("");
-
-  useEffect(() => {
-    if (solicitacao) {
-      setDescricao(solicitacao.descricao);
-      setValor(solicitacao.valor);
-      setCategoriaId(solicitacao.categoria.id);
-      setSolicitanteId(solicitacao.solicitante.id);
-    }
-  }, [solicitacao]);
 
   if (!aberto) return null;
 
@@ -58,7 +47,7 @@ export default function Modal({
     <div id={styles.overlay}>
       <div id={styles.modal}>
         <div id={styles.header}>
-          <h2>{solicitacao ? "Editar Solicitação" : "Nova Solicitação"}</h2>
+          <h2>Nova Solicitação</h2>
 
           <button id={styles.closeButton} onClick={fecharModal}>
             X
@@ -81,7 +70,7 @@ export default function Modal({
             <input
               type="number"
               value={valor}
-              onChange={(e) => setValor(Number(e.target.value))}
+              onChange={(e) => setValor(e.target.value)}
             />
           </div>
 

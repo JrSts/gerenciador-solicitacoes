@@ -2,8 +2,8 @@
 
 import { Categoria } from "@/types/Categoria";
 import { FiltroSolicitacaoDTO } from "@/dtos/FiltroSolicitacoesDTO";
-import { statusList } from "@/services/obterProximosStatus";
 import styles from "./filtros.module.css";
+import { statusList } from "@/types/StatusList";
 
 type Props = {
   filtros: FiltroSolicitacaoDTO;
