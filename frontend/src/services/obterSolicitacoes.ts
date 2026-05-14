@@ -3,42 +3,30 @@ import { api } from "../lib/api";
 import { Solicitacao } from "../types/Solicitacao";
 
 export async function obterSolicitacoes(filtros?: FiltroSolicitacaoDTO) {
-  let endPoint = "/solicitacoes";
+  const params = new URLSearchParams();
 
-  let response = await api.get<Solicitacao[]>(endPoint);
-
-  const temFiltros =
-    filtros?.status ||
-    filtros?.categoriaId ||
-    filtros?.dataInicio ||
-    filtros?.dataFim;
-
-  if (temFiltros) {
-    const params = new URLSearchParams();
-
-    if (filtros?.status) {
-      params.append("status", filtros.status);
-    }
-
-    if (filtros?.categoriaId) {
-      params.append("categoriaId", filtros.categoriaId);
-    }
-
-    if (filtros?.dataInicio) {
-      params.append("dataInicio", filtros.dataInicio);
-    }
-
-    if (filtros?.dataFim) {
-      params.append("dataFim", filtros.dataFim);
-    }
-    endPoint = `/solicitacoes/filter?${params.toString()}`;
+  if (filtros?.status) {
+    params.append("status", filtros.status);
   }
 
-  response = await api.get<Solicitacao[]>(endPoint);
-
-  if (!response) {
-    throw new Error("Erro ao buscar solicitações");
+  if (filtros?.categoriaId) {
+    params.append("categoriaId", filtros.categoriaId);
   }
 
-  return response.data;
+  if (filtros?.dataInicio) {
+    params.append("dataInicio", filtros.dataInicio);
+  }
+
+  if (filtros?.dataFim) {
+    params.append("dataFim", filtros.dataFim);
+  }
+
+  const possuiFiltros = params.toString().length > 0;
+
+  const endPoint = possuiFiltros
+    ? `/solicitacoes?${params.toString()}`
+    : `/solicitacoes`;
+  const solicitacoes = await api.get<Solicitacao[]>(endPoint);
+
+  return solicitacoes.data;
 }

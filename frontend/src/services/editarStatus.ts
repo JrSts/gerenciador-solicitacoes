@@ -3,9 +3,12 @@ import { Solicitacao, StatusSolicitacao } from "@/types/Solicitacao";
 import { UUID } from "crypto";
 
 export async function editarStatus(id: UUID, status: StatusSolicitacao) {
-  const response = await api.put<Solicitacao>(`/solicitacoes/${id}`, {
-    status,
-  });
+  const solicitacaoAtualizada = await api.put<Solicitacao>(
+    `/solicitacoes/${id}`,
+    {
+      status,
+    },
+  );
 
-  return response.data;
+  return solicitacaoAtualizada.data;
 }
