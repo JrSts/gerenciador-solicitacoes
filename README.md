@@ -66,6 +66,11 @@ O script de criação das tabelas e inserts está localizado em:
 
 - Docker
 - Docker Compose
+- Criar arquivo .env no frontend
+
+```
+	cp .env.example .env
+```
 
 ### Executando com Docker
 
