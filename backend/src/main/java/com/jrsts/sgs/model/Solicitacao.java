@@ -43,7 +43,7 @@ public class Solicitacao {
   private LocalDate dataSolicitacao;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "status", columnDefinition = "status_solicitacao", nullable = false)
+  @Column(name = "status")
   private StatusSolicitacao status;
 
   public UUID getId() {

@@ -21,7 +21,7 @@ public class Solicitante {
 
   private String nome;
 
-  @Column(unique = true, name = "cpfCnpj")
+  @Column(unique = true, name = "cpf_cnpj", nullable = false)
   private String cpfCnpj;
 
   @OneToMany(mappedBy = "solicitante")
