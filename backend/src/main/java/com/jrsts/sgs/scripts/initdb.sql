@@ -1,15 +1,19 @@
 CREATE TABLE solicitante (
     id UUID PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    cpf_cnpj VARCHAR(20) NOT NULL UNIQUE
+    cpf_cnpj VARCHAR(20) NOT NULL,
+
+    CONSTRAINT uk_solicitante_cpf_cnpj
+        UNIQUE (cpf_cnpj)
 );
+
 
 CREATE TABLE categoria (
     id UUID PRIMARY KEY,
     nome VARCHAR(100) NOT NULL
 );
 
-CREATE TYPE status_solicitacao AS ENUM (
+CREATE TYPE status_solicitacao_check AS ENUM (
     'SOLICITADO',
     'LIBERADO',
     'APROVADO',
@@ -29,7 +33,7 @@ CREATE TABLE solicitacao (
 
     data_solicitacao DATE NOT NULL,
 
-    status status_solicitacao NOT NULL,
+    status status_solicitacao_check NOT NULL DEFAULT 'SOLICITADO',
 
     CONSTRAINT fk_solicitacao_solicitante
         FOREIGN KEY (solicitante_id)
