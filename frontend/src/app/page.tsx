@@ -9,6 +9,7 @@ import { useCategorias } from "@/hooks/useCategorias";
 import { useSolicitantes } from "@/hooks/useSolicitantes";
 import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 import Filtros from "@/components/Filtros/page";
+import { Solicitacao } from "@/types/Solicitacao";
 
 export default function Home() {
   const [filtros, setFiltros] = useState<FiltroSolicitacaoDTO>({});
@@ -18,6 +19,10 @@ export default function Home() {
   const solicitantes = useSolicitantes();
 
   const { solicitacoes, setSolicitacoes, loading } = useSolicitacoes(filtros);
+
+  function salvar(solicitacao: Solicitacao) {
+    setSolicitacoes((prev) => [...prev, solicitacao]);
+  }
 
   return (
     <div className={styles.page}>
@@ -51,7 +56,7 @@ export default function Home() {
               <Modal
                 aberto={modalAberto}
                 fecharModal={() => setModalAberto(false)}
-                salvar={(dados) => console.log(dados)}
+                salvar={(dados) => salvar(dados)}
                 categorias={categorias}
                 solicitantes={solicitantes}
               />
@@ -65,7 +70,9 @@ export default function Home() {
           <hr />
           <div id={styles.tableContainer}>
             <h3>Lista de Solicitações</h3>
-            {solicitacoes.length > 0 ? (
+            {loading ? (
+              <p>Carregando...</p>
+            ) : solicitacoes.length > 0 ? (
               <ListaDeSolicitacoes
                 solicitacoes={solicitacoes}
                 setSolicitacoes={setSolicitacoes}

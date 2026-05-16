@@ -28,15 +28,17 @@ export default function Modal({
 
   if (!aberto) return null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    salvar({
+    const novaSolicitacao = await salvarSolicitacao({
       descricao,
       valor: Number(valor),
       categoriaId,
       solicitanteId,
     });
+
+    await salvar(novaSolicitacao);
 
     fecharModal();
   }
@@ -115,17 +117,7 @@ export default function Modal({
               Cancelar
             </button>
 
-            <button
-              id={styles.footerButton}
-              onClick={() =>
-                salvarSolicitacao({
-                  solicitanteId,
-                  categoriaId,
-                  descricao,
-                  valor: Number(valor),
-                })
-              }
-            >
+            <button id={styles.footerButton} type="submit">
               Salvar
             </button>
           </div>
