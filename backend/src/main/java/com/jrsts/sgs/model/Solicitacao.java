@@ -1,6 +1,7 @@
 package com.jrsts.sgs.model;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import com.jrsts.sgs.enuns.StatusSolicitacao;
@@ -109,7 +110,7 @@ public class Solicitacao {
     this.descricao = descricao;
     this.valor = valor;
     this.status = StatusSolicitacao.SOLICITADO;
-    this.dataSolicitacao = LocalDate.now();
+    this.dataSolicitacao = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
   }
 
   public Solicitacao() {
