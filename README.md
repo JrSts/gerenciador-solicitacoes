@@ -1,6 +1,12 @@
 # SGS — Sistema de Gerenciamento de Solicitações
 
-Sistema fullstack para gerenciamento de solicitações, desenvolvido com:
+Sistema de Gestão de Solicitações (SGS) é uma aplicação web desenvolvida para otimizar o controle de solicitações de pagamento, substituindo o processo manual por uma solução mais organizada, rastreável e eficiente. A plataforma permite registrar, consultar e acompanhar solicitações, além de gerenciar seu fluxo por diferentes status, garantindo maior controle, transparência e confiabilidade nas operações.
+
+# !!IMPORTANTE
+
+O arquivo .env normalmente não deve ser versionado em um repositório Git, principalmente por questões de segurança e boas práticas. Neste projeto, ele foi incluído apenas para facilitar a execução e avaliação da aplicação, já que as variáveis presentes são apenas de ambiente de desenvolvimento e não contêm informações sensíveis de produção.
+
+Foi desenvolvido com:
 
 - Backend em Java + Spring Boot
 - Frontend em Next.js + React
@@ -39,8 +45,11 @@ Sistema fullstack para gerenciamento de solicitações, desenvolvido com:
 ```text
 gerenciador-solicitacoes/
 ├── backend/
+├── docs/
 ├── frontend/
-└── docker-compose.yml
+├── docker-compose.yml
+└── README.md
+
 ```
 
 ---
@@ -66,11 +75,6 @@ O script de criação das tabelas e inserts está localizado em:
 
 - Docker
 - Docker Compose
-- Criar arquivo .env no frontend
-
-```
-	cp .env.example .env
-```
 
 ### Executando com Docker
 
